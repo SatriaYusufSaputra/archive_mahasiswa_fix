@@ -1,0 +1,102 @@
+/* Login.css */
+.login-container {
+    display: flex;
+    flex-direction: column; /* Menambahkan arah kolom untuk elemen */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .login-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .login-form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  label, input {
+    margin: 10px 0; /* Jarak antar elemen */
+    font-size: 16px; /* Ukuran font default */
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px -10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Warna tombol saat dihover */
+  }
+  
+  /* Style untuk link pendaftaran */
+  .register-link {
+    margin-top: 10px;
+    text-align: center; /* Center untuk link pendaftaran */
+  }
+  
+  .register-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline; /* Menggarisbawahi teks */
+    font-size: 16px; /* Ukuran font */
+  }
+  
+  .register-button:hover {
+    color: whitesmoke; /* Warna saat dihover */
+  }
+  
+  /* Media query untuk perangkat lebih kecil */
+  @media (max-width: 768px) {
+    form {
+      width: 90%; /* Lebar form disesuaikan untuk tablet atau layar lebih kecil */
+    }
+  
+    button {
+      font-size: 14px; /* Ukuran font lebih kecil untuk tombol */
+      padding: 8px; /* Padding tombol lebih kecil */
+    }
+  }
+  
+  /* Media query untuk perangkat ponsel */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 20px; /* Memberi sedikit padding untuk ponsel */
+    }
+  
+    form {
+      width: 100%; /* Form menyesuaikan lebar layar ponsel */
+    }
+  
+    label, input {
+      font-size: 14px; /* Ukuran font lebih kecil */
+    }
+  
+    button {
+      font-size: 12px; /* Ukuran font lebih kecil untuk tombol */
+      padding: 6px; /* Padding tombol lebih kecil */
+    }
+  }
+  

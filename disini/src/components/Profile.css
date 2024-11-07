@@ -1,0 +1,89 @@
+/* Profile.css */
+.profile-container {
+    display: flex; /* Flexbox untuk membagi tampilan */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Mengisi seluruh tinggi viewport */
+    background-color: #f7f7f7; /* Warna latar belakang lembut */
+  }
+  
+  .profile-content {
+    background-color: #ffffff; /* Latar belakang putih untuk konten */
+    border-radius: 8px; /* Sudut melengkung */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan lembut */
+    padding: 30px;
+    width: 100%;
+    max-width: 600px; /* Maksimal lebar konten */
+    display: flex; /* Gunakan Flexbox */
+    flex-direction: column;
+    align-items: center; /* Untuk mengatur semua konten di tengah secara horizontal */
+  }
+  
+  h2 {
+    text-align: center; /* Agar teks h2 berada di tengah */
+    margin-bottom: 20px; /* Jarak antar judul dan konten */
+    color: #333; /* Warna teks gelap */
+    font-size: 24px; /* Ukuran font */
+  }
+  
+  .profile-locked {
+    margin-top: 20px; /* Jarak atas untuk konten yang terkunci */
+    color: #555; /* Warna teks untuk informasi profil */
+  }
+  
+  .profile-locked p {
+    margin: 5px 0; /* Jarak antar baris */
+  }
+  
+  form {
+    width: 100%; /* Lebar penuh untuk formulir */
+  }
+  
+  label {
+    display: block; /* Menampilkan label dalam blok */
+    margin-bottom: 10px; /* Jarak bawah untuk label */
+    color: #555; /* Warna label */
+  }
+  
+  form input {
+    width: 100%; /* Lebar penuh untuk input */
+    padding: 10px;
+    border: 1px solid #ccc; /* Border abu-abu */
+    border-radius: 4px; /* Sudut melengkung */
+    margin-bottom: 15px; /* Jarak bawah untuk input */
+    transition: border-color 0.3s; /* Efek transisi saat border berubah */
+  }
+  
+  form input:focus {
+    border-color: #007bff; /* Warna border saat input aktif */
+    outline: none; /* Menghilangkan outline default */
+  }
+  
+  button {
+    width: 100%; /* Lebar penuh untuk tombol */
+    padding: 10px;
+    background-color: #007bff; /* Warna biru */
+    color: #fff; /* Warna teks putih */
+    border: none; /* Hilangkan border */
+    border-radius: 4px; /* Sudut melengkung */
+    cursor: pointer; /* Menunjukkan kursor pointer */
+    font-size: 16px; /* Ukuran font tombol */
+    transition: background-color 0.3s; /* Efek transisi saat hover */
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+  }
+  
+  .error-message {
+    color: #d9534f; /* Warna teks merah untuk pesan error */
+    font-size: 14px; /* Ukuran teks error */
+    margin-bottom: 10px; /* Jarak bawah untuk pesan error */
+  }
+  
+  .success-message {
+    color: #5cb85c; /* Warna teks hijau untuk pesan sukses */
+    font-size: 14px; /* Ukuran teks sukses */
+    margin-bottom: 10px; /* Jarak bawah untuk pesan sukses */
+  }
+  

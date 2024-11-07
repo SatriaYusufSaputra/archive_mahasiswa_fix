@@ -1,0 +1,93 @@
+.logbook-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    margin-bottom: 20px;
+  }
+  
+  .input-container {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  /* Button Tambah */
+  .button-tambah {
+    padding: 10px;
+    background-color: #60A5FA; /* Warna hijau untuk tombol Tambah */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .button-tambah:hover {
+    background-color: blue; /* Warna hijau lebih gelap saat di-hover */
+  }
+  
+  /* Button Edit */
+  .button-edit {
+    padding: 8px;
+    background-color:#60A5FA; /* Warna kuning untuk tombol Edit */
+    color: white;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  
+  .button-edit:hover {
+    background-color: blue; /* Warna kuning lebih gelap saat di-hover */
+  }
+  
+  /* Button Delete */
+  .button-delete {
+    padding: 8px;
+    background-color: #60A5FA; /* Warna merah untuk tombol Delete */
+    color: white;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+  }
+  
+  .button-delete:hover {
+    background-color: blue; /* Warna merah lebih gelap saat di-hover */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  

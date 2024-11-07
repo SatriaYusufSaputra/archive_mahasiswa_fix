@@ -1,0 +1,61 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(135deg, #1E3A8A, #60A5FA); /* Ganti dengan warna yang diinginkan */
+}
+
+.sidebar {
+  width: 130px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  height: flex;
+  background-color: #2C3E50;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.sidebar .logo img {
+  width: 80px;
+  height: 60px;
+}
+
+.sidebar .logo div {
+  font-size: 18px;
+  font-weight: bold;
+  color: whitesmoke;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: whitesmoke;
+  padding: 10px;
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-link .icon {
+  margin-right: 10px;
+}
+
+.sidebar-link:hover {
+  background-color: #ddd;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}

@@ -1,0 +1,65 @@
+/* Dashboard.css */
+.dashboard-container {
+    display: flex ; /* Flexbox untuk membagi tampilan */
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dashboard-content {
+    padding: 20px;
+    width: calc(100% - 250px);
+    display: flex; /* Gunakan Flexbox */
+    flex-direction: column;
+    align-items: center; /* Untuk mengatur semua konten di tengah secara horizontal */
+  }
+  
+  .texttengah {
+    text-align: center; /* Agar teks h2 (Silahkan Input) berada di tengah */
+    color: white; /* Ganti dengan warna yang diinginkan */
+    font-weight: bold; /* Menebalkan teks jika diperlukan */
+    padding: 20px;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dua kolom dengan lebar yang sama */
+    gap: 30px; /* Tambahkan lebih banyak jarak antar kolom dan baris */
+    padding: 0 40px; /* Jarak kanan dan kiri */
+  }
+  
+  /* Atur lebar input tanggal agar lebih pendek */
+  input[type="date"] {
+    width: 150px; /* Tentukan lebar input sesuai kebutuhan */
+  }
+  
+  .form-group {
+    display: flex; /* Flexbox untuk form group */
+    flex-direction: column; /* Arahkan input ke bawah */
+    margin-bottom: 20px; /* Tambahkan jarak antar grup form */
+  }
+  
+  /* Memberi padding pada input untuk jarak kanan-kiri */
+  form input {
+    padding: 10px;
+    margin-bottom: 10px; /* Tambahkan margin bawah untuk jarak antar input */
+  }
+  
+  /* Menambah padding pada tombol untuk jarak */
+  form button {
+    grid-column: span 2; /* Tombol submit membentang di dua kolom */
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+  }
+  /* Dashboard.css */
+.tanggal {
+    color: white; /* Ganti dengan warna yang diinginkan */
+    font-weight: bold; /* Menebalkan teks jika diperlukan */
+}
+
+  /* Menambah margin kanan-kiri pada konten form */
+  .dashboard-content {
+    padding: 20px; /* Tambahkan padding untuk jarak kanan-kiri */
+    padding-left: 40px; /* Tambahkan jarak lebih pada kiri */
+    padding-right: 40px; /* Tambahkan jarak lebih pada kanan */
+  }
