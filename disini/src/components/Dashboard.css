@@ -1,65 +1,107 @@
 /* Dashboard.css */
-.dashboard-container {
-    display: flex ; /* Flexbox untuk membagi tampilan */
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .dashboard-content {
-    padding: 20px;
-    width: calc(100% - 250px);
-    display: flex; /* Gunakan Flexbox */
-    flex-direction: column;
-    align-items: center; /* Untuk mengatur semua konten di tengah secara horizontal */
-  }
-  
-  .texttengah {
-    text-align: center; /* Agar teks h2 (Silahkan Input) berada di tengah */
-    color: white; /* Ganti dengan warna yang diinginkan */
-    font-weight: bold; /* Menebalkan teks jika diperlukan */
-    padding: 20px;
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Dua kolom dengan lebar yang sama */
-    gap: 30px; /* Tambahkan lebih banyak jarak antar kolom dan baris */
-    padding: 0 40px; /* Jarak kanan dan kiri */
-  }
-  
-  /* Atur lebar input tanggal agar lebih pendek */
-  input[type="date"] {
-    width: 150px; /* Tentukan lebar input sesuai kebutuhan */
-  }
-  
-  .form-group {
-    display: flex; /* Flexbox untuk form group */
-    flex-direction: column; /* Arahkan input ke bawah */
-    margin-bottom: 20px; /* Tambahkan jarak antar grup form */
-  }
-  
-  /* Memberi padding pada input untuk jarak kanan-kiri */
-  form input {
-    padding: 10px;
-    margin-bottom: 10px; /* Tambahkan margin bawah untuk jarak antar input */
-  }
-  
-  /* Menambah padding pada tombol untuk jarak */
-  form button {
-    grid-column: span 2; /* Tombol submit membentang di dua kolom */
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-  }
-  /* Dashboard.css */
-.tanggal {
-    color: white; /* Ganti dengan warna yang diinginkan */
-    font-weight: bold; /* Menebalkan teks jika diperlukan */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5; /* Warna latar belakang lembut */
 }
 
-  /* Menambah margin kanan-kiri pada konten form */
-  .dashboard-content {
-    padding: 20px; /* Tambahkan padding untuk jarak kanan-kiri */
-    padding-left: 40px; /* Tambahkan jarak lebih pada kiri */
-    padding-right: 40px; /* Tambahkan jarak lebih pada kanan */
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Tinggi penuh untuk tampilan yang terpusat */
+  padding: 20px;
+}
+
+.dashboard-content {
+  background-color: #ffffff; /* Warna latar belakang putih untuk kontras */
+  border-radius: 8px; /* Sudut yang membulat */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Bayangan lembut */
+  width: 100%;
+  max-width: 600px; /* Maksimal lebar kontainer */
+  padding: 20px 30px; /* Ruang dalam */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.texttengah {
+  text-align: center;
+  color: #333333; /* Warna teks utama */
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px; /* Jarak bawah dengan form */
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dua kolom dengan lebar sama */
+  gap: 20px; /* Jarak antar elemen */
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+form input,
+form button {
+  font-size: 14px; /* Ukuran font */
+  border: 1px solid #ccc; /* Batas abu-abu */
+  border-radius: 4px; /* Sudut membulat */
+  padding: 10px;
+  width: 100%; /* Lebar penuh */
+  box-sizing: border-box; /* Termasuk padding dalam ukuran elemen */
+  transition: all 0.3s ease; /* Efek transisi untuk hover dan fokus */
+}
+
+form input:focus {
+  border-color: #007bff; /* Warna biru untuk fokus */
+  outline: none; /* Hilangkan outline default */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Bayangan lembut saat fokus */
+}
+
+form button {
+  grid-column: span 2; /* Membentang di dua kolom */
+  background-color: #007bff; /* Warna biru untuk tombol */
+  color: #ffffff; /* Warna teks putih */
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+form button:hover {
+  background-color: #0056b3; /* Warna lebih gelap saat hover */
+}
+
+.success-message {
+  color: #28a745; /* Warna hijau untuk pesan sukses */
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: #dc3545; /* Warna merah untuk pesan error */
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+  color: #333333;
+  margin-bottom: 5px; /* Jarak antara label dan input */
+  font-weight: bold;
+}
+
+/* Responsif untuk perangkat kecil */
+@media (max-width: 768px) {
+  .form-grid {
+      grid-template-columns: 1fr; /* Ubah menjadi satu kolom */
   }
+
+  .dashboard-content {
+      padding: 15px 20px; /* Kurangi padding pada layar kecil */
+  }
+}

@@ -11,64 +11,58 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Ambil input JSON
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Cek apakah semua field yang dibutuhkan ada
-$requiredFields = ['nama', 'nim', 'universitas', 'noHpEmail', 'kelompok', 'proyek', 'github', 'tanggalMasuk', 'tanggalKeluar', 'penempatan'];
-foreach ($requiredFields as $field) {
-    if (!isset($data[$field])) {
-        echo json_encode(["success" => false, "message" => "Field '$field' tidak ditemukan."]);
-        exit;
-    }
+// Validasi input
+if (!isset($data['userId'], $data['nama'], $data['alamat'], $data['no_hp'], $data['tanggalMasuk'], $data['tanggalKeluar'], $data['proyek'])) {
+    echo json_encode(["success" => false, "message" => "Semua field harus diisi."]);
+    exit;
 }
 
 // Koneksi ke database
-$servername = "localhost"; // Ganti dengan server database Anda
-$username = "root"; // Ganti dengan username database Anda
-$password = ""; // Ganti dengan password database Anda
-$dbname = "student_records"; // Ganti dengan nama database Anda
+$servername = "localhost"; // Sesuaikan dengan server database Anda
+$username = "root";        // Sesuaikan dengan username database Anda
+$password = "";            // Sesuaikan dengan password database Anda
+$dbname = "app_students";  // Sesuaikan dengan nama database Anda
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Memeriksa koneksi
+// Periksa koneksi
 if ($conn->connect_error) {
     echo json_encode(["success" => false, "message" => "Koneksi ke database gagal: " . $conn->connect_error]);
     exit;
 }
 
-// Ambil data dari array
+// Ambil data dari input
+$userId = $data['userId'];
 $nama = $data['nama'];
-$nim = $data['nim'];
-$universitas = $data['universitas'];
-$noHpEmail = $data['noHpEmail'];
-$kelompok = $data['kelompok'];
-$proyek = $data['proyek'];
-$github = $data['github'];
+$alamat = $data['alamat'];
+$no_hp = $data['no_hp'];
 $tanggalMasuk = $data['tanggalMasuk'];
 $tanggalKeluar = $data['tanggalKeluar'];
-$penempatan = $data['penempatan'];
+$proyek = $data['proyek'];
 
-// Siapkan statement untuk memeriksa apakah profil sudah ada
-$stmt = $conn->prepare("SELECT * FROM profiles WHERE noHpEmail = ?");
-$stmt->bind_param("s", $noHpEmail);
+// Periksa apakah pengguna sudah ada
+$stmt = $conn->prepare("SELECT 1 FROM users WHERE id = ?");
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-    // Jika profil sudah ada, lakukan update
+    // Jika pengguna sudah ada, update data
     $stmt->close();
-    $stmt = $conn->prepare("UPDATE profiles SET name = ?, nim = ?, universitas = ?, noHpEmail = ?, kelompok = ?, proyek = ?, github = ?, tanggal_masuk = ?, tanggal_keluar = ?, penempatan = ? WHERE noHpEmail = ?");
-    $stmt->bind_param("sssssssssss", $nama, $nim, $universitas, $noHpEmail, $kelompok, $proyek, $github, $tanggalMasuk, $tanggalKeluar, $penempatan, $noHpEmail);
-    
+    $stmt = $conn->prepare("UPDATE users SET nama = ?, alamat = ?, no_hp = ?, tanggal_masuk = ?, tanggal_keluar = ?, proyek = ? WHERE id = ?");
+    $stmt->bind_param("ssssssi", $nama, $alamat, $no_hp, $tanggalMasuk, $tanggalKeluar, $proyek, $userId);
+
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Profil berhasil diperbarui!"]);
     } else {
         echo json_encode(["success" => false, "message" => "Gagal memperbarui profil: " . $stmt->error]);
     }
 } else {
-    // Jika tidak ada, lakukan insert
+    // Jika pengguna belum ada, tambahkan data
     $stmt->close();
-    $stmt = $conn->prepare("INSERT INTO profiles (name, nim, universitas, noHpEmail, kelompok, proyek, github, tanggal_masuk, tanggal_keluar, penempatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssss", $nama, $nim, $universitas, $noHpEmail, $kelompok, $proyek, $github, $tanggalMasuk, $tanggalKeluar, $penempatan);
-    
+    $stmt = $conn->prepare("INSERT INTO users (id, nama, alamat, no_hp, tanggal_masuk, tanggal_keluar, proyek) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssss", $userId, $nama, $alamat, $no_hp, $tanggalMasuk, $tanggalKeluar, $proyek);
+
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Profil berhasil disimpan!"]);
     } else {

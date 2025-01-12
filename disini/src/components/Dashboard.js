@@ -4,30 +4,33 @@ import './Dashboard.css';
 const Dashboard = () => {
   const [data, setData] = useState({
     nama: '',
-    nim: '',
-    universitas: '',
-    noHpEmail: '',
-    kelompok: '',
-    proyek: '',
-    github: '',
+    password: '',
+    alamat: '',
+    no_hp: '',
     tanggalMasuk: '',
     tanggalKeluar: '',
-    penempatan: ''
+    proyek: ''
   });
 
   const [successMessage, setSuccessMessage] = useState(''); // Menyimpan pesan sukses
+  const [errorMessage, setErrorMessage] = useState(''); // Menyimpan pesan error
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setData({ ...data, [name]: value });
+
+    // Sinkronisasi nama dan password
+    if (name === 'nama') {
+      setData({ ...data, nama: value, password: value });
+    } else {
+      setData({ ...data, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Kirim data ke backend
-      const response = await fetch('http://localhost/archive_mahasiswa_fix/student-api/getProfile.php', {
+      const response = await fetch('http://localhost/archive_mahasiswa_fix/student-api/addUser.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,124 +41,88 @@ const Dashboard = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(responseData.message); // Tampilkan pesan dari backend
-        setData({ // Reset form setelah submit
+        setSuccessMessage(responseData.message); // Tampilkan pesan sukses dari backend
+        setErrorMessage('');
+        setData({
           nama: '',
-          nim: '',
-          universitas: '',
-          noHpEmail: '',
+          password: '',
+          alamat: '',
+          no_hp: '',
           tanggalMasuk: '',
           tanggalKeluar: '',
-          kelompok: '',
-          proyek: '',
-          github: '',
-          penempatan: ''
-        });
+          proyek: ''
+        }); // Reset form
       } else {
         throw new Error(responseData.message || 'Error occurred while submitting data');
       }
     } catch (error) {
       console.error('Error:', error);
-      setSuccessMessage('Failed to submit data. Please try again.');
+      setSuccessMessage('');
+      setErrorMessage('Failed to submit data. Please try again.');
     }
   };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
-        <h1 className="texttengah">SILAHKAN INPUT</h1>
-        {successMessage && <p className="success-message">{successMessage}</p>} {/* Tampilkan pesan sukses */}
+        <h1 className="texttengah">Mendaftarkan Mahasiswa</h1>
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="form-grid">
           <div className="form-group">
-            <label htmlFor="tanggalMasuk" className="tanggal">Tanggal Masuk</label>
-            <input 
-              type="date" 
-              name="tanggalMasuk" 
-              id="tanggalMasuk" 
-              value={data.tanggalMasuk} 
-              onChange={handleChange} 
-              required 
-              style={{ width: '150px' }} 
+            <input
+              type="text"
+              name="nama"
+              placeholder="Nama"
+              value={data.nama}
+              onChange={handleChange}
+              required
             />
-            <input 
-              type="text" 
-              name="nama" 
-              placeholder="Nama" 
-              value={data.nama} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              name="alamat"
+              placeholder="Alamat"
+              value={data.alamat}
+              onChange={handleChange}
+              required
             />
-            <input 
-              type="text" 
-              name="nim" 
-              placeholder="NIM" 
-              value={data.nim} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              name="no_hp"
+              placeholder="No HP"
+              value={data.no_hp}
+              onChange={handleChange}
+              required
             />
-            <input 
-              type="text" 
-              name="universitas" 
-              placeholder="Asal Universitas" 
-              value={data.universitas} 
-              onChange={handleChange} 
-              required 
-            />
-            <input 
-              type="text" 
-              name="noHpEmail" 
-              placeholder="No HP / Email" 
-              value={data.noHpEmail} 
-              onChange={handleChange} 
-              required 
+            <label htmlFor="tanggalMasuk">Tanggal Masuk</label>
+            <input
+              type="date"
+              name="tanggalMasuk"
+              id="tanggalMasuk"
+              value={data.tanggalMasuk}
+              onChange={handleChange}
+              required
             />
           </div>
-
           <div className="form-group">
-            <label htmlFor="tanggalKeluar" className="tanggal">Tanggal Keluar</label>
-            <input 
-              type="date" 
-              name="tanggalKeluar" 
-              id="tanggalKeluar" 
-              value={data.tanggalKeluar} 
-              onChange={handleChange} 
-              required 
-              style={{ width: '150px' }} 
+            <label htmlFor="tanggalKeluar">Tanggal Keluar</label>
+            <input
+              type="date"
+              name="tanggalKeluar"
+              id="tanggalKeluar"
+              value={data.tanggalKeluar}
+              onChange={handleChange}
+              required
             />
-            <input 
-              type="text" 
-              name="kelompok" 
-              placeholder="Nama Kelompok" 
-              value={data.kelompok} 
-              onChange={handleChange} 
-              required 
-            />
-            <input 
-              type="text" 
-              name="proyek" 
-              placeholder="Nama Proyek" 
-              value={data.proyek} 
-              onChange={handleChange} 
-              required 
-            />
-            <input 
-              type="text" 
-              name="github" 
-              placeholder="Link GitHub" 
-              value={data.github} 
-              onChange={handleChange} 
-              required 
-            />
-            <input 
-              type="text" 
-              name="penempatan" 
-              placeholder="Penempatan" 
-              value={data.penempatan} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              name="proyek"
+              placeholder="Proyek"
+              value={data.proyek}
+              onChange={handleChange}
+              required
             />
           </div>
-
           <button type="submit">Submit</button>
         </form>
       </div>

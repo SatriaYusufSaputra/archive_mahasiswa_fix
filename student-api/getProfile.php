@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: http://localhost:3001"); // Ganti dengan URL frontend Anda
+header("Access-Control-Allow-Origin: http://localhost:3000"); // Ganti dengan URL frontend Anda
 header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -32,10 +32,10 @@ switch ($method) {
     case 'GET':
         // General search functionality
         $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $query = "SELECT id, nama, nim, universitas, noHpEmail, kelompok, proyek, github, tanggalMasuk, tanggalKeluar, penempatan FROM students";
+        $query = "SELECT id, nama, alamat, no_hp, tanggalMasuk, tanggalKeluar, proyek FROM users";
 
         if ($search !== '') {
-            $query .= " WHERE nama LIKE :search OR nim LIKE :search OR universitas LIKE :search OR kelompok LIKE :search OR proyek LIKE :search";
+            $query .= " WHERE nama LIKE :search OR alamat LIKE :search OR no_hp LIKE :search OR proyek LIKE :search";
             $stmt = $conn->prepare($query);
             $searchTerm = "%$search%";
             $stmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
@@ -54,21 +54,17 @@ switch ($method) {
         $data = json_decode(file_get_contents("php://input"), true);
 
         // Check if all required data is present
-        if (isset($data['nama'], $data['nim'], $data['universitas'], $data['noHpEmail'], $data['kelompok'], $data['proyek'], $data['github'], $data['tanggalMasuk'], $data['tanggalKeluar'], $data['penempatan'])) {
-            $query = "INSERT INTO students (nama, nim, universitas, noHpEmail, kelompok, proyek, github, tanggalMasuk, tanggalKeluar, penempatan) 
-                      VALUES (:nama, :nim, :universitas, :noHpEmail, :kelompok, :proyek, :github, :tanggalMasuk, :tanggalKeluar, :penempatan)";
+        if (isset($data['nama'], $data['alamat'], $data['no_hp'], $data['tanggalMasuk'], $data['tanggalKeluar'], $data['proyek'])) {
+            $query = "INSERT INTO students (nama, alamat, no_hp, tanggalMasuk, tanggalKeluar, proyek) 
+                      VALUES (:nama, :alamat, :no_hp, :tanggalMasuk, :tanggalKeluar, :proyek)";
             
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':nama', $data['nama'], PDO::PARAM_STR);
-            $stmt->bindParam(':nim', $data['nim'], PDO::PARAM_STR);
-            $stmt->bindParam(':universitas', $data['universitas'], PDO::PARAM_STR);
-            $stmt->bindParam(':noHpEmail', $data['noHpEmail'], PDO::PARAM_STR);
-            $stmt->bindParam(':kelompok', $data['kelompok'], PDO::PARAM_STR);
-            $stmt->bindParam(':proyek', $data['proyek'], PDO::PARAM_STR);
-            $stmt->bindParam(':github', $data['github'], PDO::PARAM_STR);
+            $stmt->bindParam(':alamat', $data['alamat'], PDO::PARAM_STR);
+            $stmt->bindParam(':no_hp', $data['no_hp'], PDO::PARAM_STR);
             $stmt->bindParam(':tanggalMasuk', $data['tanggalMasuk'], PDO::PARAM_STR);
             $stmt->bindParam(':tanggalKeluar', $data['tanggalKeluar'], PDO::PARAM_STR);
-            $stmt->bindParam(':penempatan', $data['penempatan'], PDO::PARAM_STR);
+            $stmt->bindParam(':proyek', $data['proyek'], PDO::PARAM_STR);
             
             if ($stmt->execute()) {
                 echo json_encode([
@@ -90,7 +86,7 @@ switch ($method) {
         $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
         if ($id) {
-            $query = "DELETE FROM students WHERE id = :id";
+            $query = "DELETE FROM users WHERE id = :id";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT); 
 

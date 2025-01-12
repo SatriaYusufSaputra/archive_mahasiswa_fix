@@ -6,10 +6,9 @@ const Logbook = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [formInput, setFormInput] = useState({
-    no: '',
     tanggal: '',
     uraian_projek: '',
-    status: ''
+    status: 'ongoing', // Default value sesuai dengan ENUM pada database
   });
   const userId = localStorage.getItem('userId'); // Ambil userId dari localStorage
 
@@ -34,20 +33,19 @@ const Logbook = () => {
   }, [fetchData, userId]);
 
   const handleAddEntry = async () => {
-    if (formInput.no && formInput.tanggal && formInput.uraian_projek && formInput.status) {
+    if (formInput.tanggal && formInput.uraian_projek && formInput.status) {
       const newEntry = {
         userId, // Tambahkan userId ke dalam data entri
-        no: formInput.no,
         tanggal: formInput.tanggal,
         uraian_projek: formInput.uraian_projek,
-        status: formInput.status
+        status: formInput.status,
       };
 
       try {
         const response = await fetch('http://localhost/archive_mahasiswa_fix/student-api/logbook.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEntry)
+          body: JSON.stringify(newEntry),
         });
 
         if (!response.ok) {
@@ -57,7 +55,7 @@ const Logbook = () => {
         const result = await response.json();
         console.log(result.message);
         fetchData(); // Memperbarui data setelah menambah entri
-        setFormInput({ no: '', tanggal: '', uraian_projek: '', status: '' });
+        setFormInput({ tanggal: '', uraian_projek: '', status: 'ongoing' });
       } catch (error) {
         alert(`Terjadi kesalahan saat mengirim data: ${error.message}`);
         console.error('Error:', error);
@@ -75,7 +73,6 @@ const Logbook = () => {
   const handleEdit = (index) => {
     const entryToEdit = data[index];
     setFormInput({
-      no: entryToEdit.no,
       tanggal: entryToEdit.tanggal,
       uraian_projek: entryToEdit.uraian_projek,
       status: entryToEdit.status,
@@ -84,21 +81,21 @@ const Logbook = () => {
 
   const handleDelete = async (index) => {
     const entryToDelete = data[index];
-    if (window.confirm(`Apakah Anda yakin ingin menghapus entri ${entryToDelete.no}?`)) {
+    if (window.confirm(`Apakah Anda yakin ingin menghapus entri tanggal ${entryToDelete.tanggal}?`)) {
       try {
         const response = await fetch(`http://localhost/archive_mahasiswa_fix/student-api/logbook.php?id=${entryToDelete.id}`, {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
         });
-  
+
         const result = await response.json();
-  
+
         if (!result.success) {
           throw new Error(result.message);
         }
-  
+
         setData(data.filter((_, i) => i !== index));
         alert(result.message);
       } catch (error) {
@@ -107,8 +104,6 @@ const Logbook = () => {
       }
     }
   };
-  
-  
 
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
@@ -120,51 +115,44 @@ const Logbook = () => {
       <p>Berikut merupakan daftar pemaparan yang telah kalian lakukan</p>
       <div className="input-container">
         <input
-          type="text"
-          name="no"
-          placeholder="No"
-          value={formInput.no}
-          onChange={(e) => setFormInput({ ...formInput, no: e.target.value })}
-        />
-        <input
           type="date"
           name="tanggal"
           value={formInput.tanggal}
           onChange={(e) => setFormInput({ ...formInput, tanggal: e.target.value })}
         />
-        <input
-          type="text"
+        <textarea
           name="uraian_projek"
           placeholder="Uraian Projek"
           value={formInput.uraian_projek}
           onChange={(e) => setFormInput({ ...formInput, uraian_projek: e.target.value })}
         />
-        <input
-          type="text"
+        <select
           name="status"
-          placeholder="Status"
           value={formInput.status}
           onChange={(e) => setFormInput({ ...formInput, status: e.target.value })}
-        />
+        >
+          <option value="revisi">Revisi</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="selesai">Selesai</option>
+        </select>
       </div>
       <div className="button-container">
         <button className="button-tambah" onClick={handleAddEntry}>Tambah</button>
       </div>
       <div className="pagination">
-          <label htmlFor="entriesPerPage">Show Entries: </label>
-          <select id="entriesPerPage" value={entriesPerPage} onChange={handleEntriesPerPageChange}>
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-            <option value={75}>75</option>
-            <option value={100}>100</option>
-          </select>
-        </div>
+        <label htmlFor="entriesPerPage">Show Entries: </label>
+        <select id="entriesPerPage" value={entriesPerPage} onChange={handleEntriesPerPageChange}>
+          <option value={10}>10</option>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={75}>75</option>
+          <option value={100}>100</option>
+        </select>
+      </div>
       <div className="logbook-entries">
         <table>
           <thead>
             <tr>
-              <th>No</th>
               <th>Tanggal</th>
               <th>Uraian Projek</th>
               <th>Status</th>
@@ -174,7 +162,6 @@ const Logbook = () => {
           <tbody>
             {currentEntries.map((entry, index) => (
               <tr key={index}>
-                <td>{entry.no}</td>
                 <td>{entry.tanggal}</td>
                 <td>{entry.uraian_projek}</td>
                 <td>{entry.status}</td>
@@ -186,8 +173,6 @@ const Logbook = () => {
             ))}
           </tbody>
         </table>
-
-        
       </div>
     </div>
   );

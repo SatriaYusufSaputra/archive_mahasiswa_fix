@@ -5,20 +5,15 @@ import './Profile.css';
 const Profile = () => {
   const [data, setData] = useState({
     nama: '',
-    nim: '',
-    universitas: '',
-    noHpEmail: '',
-    kelompok: '',
+    alamat: '',
+    no_hp: '',
+    tanggalMasuk: '',
+    tanggalKeluar: '',
     proyek: '',
-    github: '',
-    tanggal_masuk: '',
-    tanggal_keluar: '',
-    penempatan: ''
   });
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isProfileCompleted, setIsProfileCompleted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,14 +43,11 @@ const Profile = () => {
 
       if (result.success && result.data && result.data.length > 0) {
         setData(result.data[0]); // Ambil data pengguna pertama
-        setIsProfileCompleted(true);
-        localStorage.setItem('isProfileCompleted', 'true');
       } else {
-        setIsProfileCompleted(false);
-        setErrorMessage(result.message || 'Anda belum melengkapi profil.');
+        setErrorMessage(result.message || 'Profil tidak ditemukan.');
       }
     } catch (error) {
-      setErrorMessage('Anda belum melengkapi profil.');
+      setErrorMessage('Gagal mengambil data profil.');
       console.error('Error saat mengambil profil:', error);
     }
   };
@@ -76,15 +68,11 @@ const Profile = () => {
         body: JSON.stringify({ 
           userId, 
           nama: data.nama,
-          nim: data.nim, 
-          universitas: data.universitas, 
-          noHpEmail: data.noHpEmail,
-          kelompok: data.kelompok, 
-          proyek: data.proyek, 
-          github: data.github, 
+          alamat: data.alamat, 
+          no_hp: data.no_hp,
           tanggalMasuk: data.tanggalMasuk,
-          tanggalKeluar: data.tanggalMeluar,
-          penempatan: data.penempatan 
+          tanggalKeluar: data.tanggalKeluar,
+          proyek: data.proyek,
         }),
       });
 
@@ -92,8 +80,6 @@ const Profile = () => {
 
       if (result.success) {
         setSuccessMessage('Profil berhasil disimpan!');
-        setIsProfileCompleted(true);
-        localStorage.setItem('isProfileCompleted', 'true');
       } else {
         throw new Error(result.message);
       }
@@ -110,66 +96,36 @@ const Profile = () => {
         {successMessage && <p className="success-message">{successMessage}</p>}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        {isProfileCompleted ? (
-          <div className="profile-locked">
-            <p><strong>Nama:</strong> {data.nama || 'Tidak tersedia'}</p>
-            <p><strong>NIM:</strong> {data.nim || 'Tidak tersedia'}</p>
-            <p><strong>Universitas:</strong> {data.universitas || 'Tidak tersedia'}</p>
-            <p><strong>No HP / Email:</strong> {data.noHpEmail || 'Tidak tersedia'}</p>
-            <p><strong>Kelompok:</strong> {data.kelompok || 'Tidak tersedia'}</p>
-            <p><strong>Proyek:</strong> {data.proyek || 'Tidak tersedia'}</p>
-            <p><strong>GitHub:</strong> {data.github || 'Tidak tersedia'}</p>
-            <p><strong>Tanggal Masuk:</strong> {data.tanggalMasuk || 'Tidak tersedia'}</p>
-            <p><strong>Tanggal Keluar:</strong> {data.tanggalKeluar || 'Tidak tersedia'}</p>
-            <p><strong>Penempatan:</strong> {data.penempatan || 'Tidak tersedia'}</p>
+        {/* Formulir untuk edit profil */}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>
+              Nama:
+              <input type="text" name="nama" value={data.nama} onChange={handleChange} required />
+            </label>
+            <label>
+              Alamat:
+              <input type="text" name="alamat" value={data.alamat} onChange={handleChange} required />
+            </label>
+            <label>
+              No HP:
+              <input type="text" name="no_hp" value={data.no_hp} onChange={handleChange} required />
+            </label>
+            <label>
+              Tanggal Masuk:
+              <input type="date" name="tanggalMasuk" value={data.tanggalMasuk} onChange={handleChange} required />
+            </label>
+            <label>
+              Tanggal Keluar:
+              <input type="date" name="tanggalKeluar" value={data.tanggalKeluar} onChange={handleChange} required />
+            </label>
+            <label>
+              Proyek:
+              <input type="text" name="proyek" value={data.proyek} onChange={handleChange} required />
+            </label>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>
-                Nama:
-                <input type="text" name="nama" value={data.nama} onChange={handleChange} required />
-              </label>
-              <label>
-                NIM:
-                <input type="text" name="nim" value={data.nim} onChange={handleChange} required />
-              </label>
-              <label>
-                Universitas:
-                <input type="text" name="universitas" value={data.universitas} onChange={handleChange} required />
-              </label>
-              <label>
-                No HP / Email:
-                <input type="text" name="noHpEmail" value={data.noHpEmail} onChange={handleChange} required />
-              </label>
-              <label>
-                Tanggal Masuk:
-                <input type="date" name="tanggalMasuk" value={data.tanggalMasuk} onChange={handleChange} required />
-              </label>
-              <label>
-                Tanggal Keluar:
-                <input type="date" name="tanggalKeluar" value={data.tanggalKeluar} onChange={handleChange} required />
-              </label>
-              <label>
-                Kelompok:
-                <input type="text" name="kelompok" value={data.kelompok} onChange={handleChange} required />
-              </label>
-              <label>
-                Proyek:
-                <input type="text" name="proyek" value={data.proyek} onChange={handleChange} required />
-              </label>
-              <label>
-                GitHub:
-                <input type="text" name="github" value={data.github} onChange={handleChange} required />
-              </label>
-              <label>
-                Penempatan:
-                <input type="text" name="penempatan" value={data.penempatan} onChange={handleChange} required />
-              </label>
-            </div>
-            <button type="submit">Simpan Profil</button>
-          </form>
-        )}
+          <button type="submit">Simpan Profil</button>
+        </form>
       </div>
     </div>
   );

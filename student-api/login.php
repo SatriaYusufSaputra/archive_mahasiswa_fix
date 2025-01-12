@@ -1,46 +1,63 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: http://localhost:3000"); // Ganti dengan URL frontend Anda
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
 
-$host = 'localhost';
-$dbname = 'student_records';
-$username = 'root';
-$password = '';
+// Handle OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
 
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Include the database configuration file
+include 'config.php';
 
-    // Membaca data JSON dari input
-    $data = json_decode(file_get_contents("php://input"));
-    $email = $data->email ?? null;  // Menggunakan null coalescing untuk menghindari kesalahan
-    $passwordInput = $data->password ?? null;  // Menggunakan null coalescing
+/** @var PDO $conn */
+if (!$conn) {
+    echo json_encode(["success" => false, "message" => "Failed to connect to the database."]);
+    exit();
+}
 
-    // Memeriksa apakah email dan password diberikan
-    if (empty($email) || empty($passwordInput)) {
-        echo json_encode(['success' => false, 'message' => 'Email atau password tidak boleh kosong.']);
-        exit;
-    }
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    // Query untuk mengambil data pengguna berdasarkan email
-    $query = $conn->prepare("SELECT * FROM users WHERE email = :email");
-    $query->bindParam(':email', $email);
-    $query->execute();
+// Handle POST request for login
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    // Memeriksa jika pengguna ditemukan
-    if ($query->rowCount() > 0) {
-        $user = $query->fetch(PDO::FETCH_ASSOC);
-        
-        // Memverifikasi password
-        if (password_verify($passwordInput, $user['password'])) {
-            echo json_encode(['success' => true, 'profileCompleted' => $user['profileCompleted']]);
+    $nama = isset($data['nama']) ? trim($data['nama']) : null;
+    $password = isset($data['password']) ? trim($data['password']) : null;
+
+    if ($nama && $password) {
+        $query = "SELECT id, password FROM users WHERE nama = :nama";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':nama', $nama, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password'])) {
+                echo json_encode([
+                    "success" => true,
+                    "userId" => $user['id'],
+                    "message" => "Login berhasil!"
+                ]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Nama atau password salah."]);
+            }
         } else {
-            echo json_encode(['success' => false, 'message' => 'Password salah']);
+            echo json_encode(["success" => false, "message" => "Terjadi kesalahan pada server."]);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Email tidak ditemukan']);
+        echo json_encode(["success" => false, "message" => "Nama dan password harus diisi."]);
     }
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+} else {
+    echo json_encode(["success" => false, "message" => "Method not allowed."]);
 }
+
+// Close the database connection
+$conn = null;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
+  const [nama, setNama] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -12,24 +12,25 @@ function Login() {
     e.preventDefault();
     setLoading(true);
 
-    if (emailOrUsername === 'admin' && password === 'admin') {
+    // Login admin
+    if (nama === 'admin' && password === 'admin') {
       navigate('/dashboard');
     } else {
       try {
+        // Login user biasa
         const response = await fetch('http://localhost/archive_mahasiswa_fix/student-api/login.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: emailOrUsername, password }),
+          body: JSON.stringify({ nama, password }),
         });
 
         const data = await response.json();
 
         if (data.success) {
-          localStorage.setItem('userId', data.userId);
-          localStorage.setItem('isProfileCompleted', data.profileCompleted ? 'true' : 'false');
-          navigate('/profile');
+          localStorage.setItem('userId', data.userId); // Simpan userId di localStorage
+          navigate('/profile'); // Arahkan ke halaman profil
         } else {
-          alert(data.message);
+          alert(data.message || 'Login gagal. Pastikan nama dan password benar.');
         }
       } catch (error) {
         alert(`Terjadi kesalahan saat login: ${error.message}`);
@@ -45,11 +46,11 @@ function Login() {
       <form onSubmit={handleLogin} className="login-form">
         <h1>Login</h1>
         <div>
-          <label>Email:</label>
+          <label>Nama:</label>
           <input
             type="text"
-            value={emailOrUsername}
-            onChange={(e) => setEmailOrUsername(e.target.value)}
+            value={nama}
+            onChange={(e) => setNama(e.target.value)}
             required
           />
         </div>
@@ -66,10 +67,6 @@ function Login() {
           {loading ? 'Loading...' : 'Login'}
         </button>
       </form>
-      <div className="register-link">
-        <span>Belum punya akun? </span>
-        <button className="register-button" onClick={() => navigate('/register')}>Daftar di sini</button>
-      </div>
     </div>
   );
 }

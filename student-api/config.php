@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost'; // Ganti jika menggunakan host lain
-$dbname = 'student_records'; // Nama database
+$dbname = 'app_students'; // Nama database
 $username = 'root'; // Username database
 $password = ''; // Password database
 
