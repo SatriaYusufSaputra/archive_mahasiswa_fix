@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Record.css';
+import '../style/Record.css';
 
 const Record = () => {
   const [records, setRecords] = useState([]); // Menyimpan data record

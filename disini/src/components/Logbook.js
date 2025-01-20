@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Logbook.css';
+import '../style/Logbook.css';
 
 const Logbook = () => {
   const [data, setData] = useState([]);

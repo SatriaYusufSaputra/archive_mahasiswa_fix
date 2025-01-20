@@ -1,74 +1,80 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: http://localhost:3000"); // Sesuaikan dengan URL frontend Anda
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
 
-// Header CORS
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Ambil input JSON
-$data = json_decode(file_get_contents("php://input"), true);
-
-// Validasi input
-if (!isset($data['userId'], $data['nama'], $data['alamat'], $data['no_hp'], $data['tanggalMasuk'], $data['tanggalKeluar'], $data['proyek'])) {
-    echo json_encode(["success" => false, "message" => "Semua field harus diisi."]);
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
 }
 
-// Koneksi ke database
-$servername = "localhost"; // Sesuaikan dengan server database Anda
-$username = "root";        // Sesuaikan dengan username database Anda
-$password = "";            // Sesuaikan dengan password database Anda
-$dbname = "app_students";  // Sesuaikan dengan nama database Anda
+include 'config.php'; // Pastikan file config.php sudah benar
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$method = $_SERVER['REQUEST_METHOD'];
 
-// Periksa koneksi
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Koneksi ke database gagal: " . $conn->connect_error]);
-    exit;
+switch ($method) {
+    case 'GET':
+        if (isset($_GET['user_id'])) {
+            $user_id = intval($_GET['user_id']);
+            $query = "SELECT id, nama, alamat, no_hp, tanggalMasuk, tanggalKeluar, proyek FROM users WHERE id = :user_id";
+            try {
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($result) {
+                    echo json_encode(["success" => true, "data" => $result]);
+                } else {
+                    echo json_encode(["success" => false, "message" => "Profil tidak ditemukan."]);
+                }
+            } catch (PDOException $e) {
+                echo json_encode(["success" => false, "message" => "Kesalahan database: " . $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(["success" => false, "message" => "Parameter user_id diperlukan."]);
+        }
+        break;
+
+    case 'POST':
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (isset($data['userId'], $data['nama'], $data['alamat'], $data['no_hp'], $data['tanggalMasuk'], $data['tanggalKeluar'], $data['proyek'])) {
+            $user_id = intval($data['userId']);
+            $query = "UPDATE users 
+                      SET nama = :nama, alamat = :alamat, no_hp = :no_hp, 
+                          tanggalMasuk = :tanggalMasuk, tanggalKeluar = :tanggalKeluar, proyek = :proyek 
+                      WHERE id = :user_id";
+
+            try {
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindParam(':nama', $data['nama'], PDO::PARAM_STR);
+                $stmt->bindParam(':alamat', $data['alamat'], PDO::PARAM_STR);
+                $stmt->bindParam(':no_hp', $data['no_hp'], PDO::PARAM_STR);
+                $stmt->bindParam(':tanggalMasuk', $data['tanggalMasuk'], PDO::PARAM_STR);
+                $stmt->bindParam(':tanggalKeluar', $data['tanggalKeluar'], PDO::PARAM_STR);
+                $stmt->bindParam(':proyek', $data['proyek'], PDO::PARAM_STR);
+
+                if ($stmt->execute()) {
+                    echo json_encode(["success" => true, "message" => "Profil berhasil diperbarui."]);
+                } else {
+                    echo json_encode(["success" => false, "message" => "Gagal memperbarui profil."]);
+                }
+            } catch (PDOException $e) {
+                echo json_encode(["success" => false, "message" => "Kesalahan database: " . $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(["success" => false, "message" => "Data tidak lengkap untuk menyimpan profil."]);
+        }
+        break;
+
+    default:
+        echo json_encode(["success" => false, "message" => "Metode tidak diizinkan."]);
+        break;
 }
 
-// Ambil data dari input
-$userId = $data['userId'];
-$nama = $data['nama'];
-$alamat = $data['alamat'];
-$no_hp = $data['no_hp'];
-$tanggalMasuk = $data['tanggalMasuk'];
-$tanggalKeluar = $data['tanggalKeluar'];
-$proyek = $data['proyek'];
-
-// Periksa apakah pengguna sudah ada
-$stmt = $conn->prepare("SELECT 1 FROM users WHERE id = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    // Jika pengguna sudah ada, update data
-    $stmt->close();
-    $stmt = $conn->prepare("UPDATE users SET nama = ?, alamat = ?, no_hp = ?, tanggal_masuk = ?, tanggal_keluar = ?, proyek = ? WHERE id = ?");
-    $stmt->bind_param("ssssssi", $nama, $alamat, $no_hp, $tanggalMasuk, $tanggalKeluar, $proyek, $userId);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Profil berhasil diperbarui!"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Gagal memperbarui profil: " . $stmt->error]);
-    }
-} else {
-    // Jika pengguna belum ada, tambahkan data
-    $stmt->close();
-    $stmt = $conn->prepare("INSERT INTO users (id, nama, alamat, no_hp, tanggal_masuk, tanggal_keluar, proyek) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issssss", $userId, $nama, $alamat, $no_hp, $tanggalMasuk, $tanggalKeluar, $proyek);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Profil berhasil disimpan!"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Gagal menyimpan profil: " . $stmt->error]);
-    }
-}
-
-$stmt->close();
-$conn->close();
+$conn = null; 
+?>
